@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/ui/common/header";
 import Footer from "@/components/ui/common/footer";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/sonner";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,7 +30,10 @@ export default function RootLayout({
           <header className="relative z-10 ">
           <Header />
           </header>
+          <div>
           <main className=" relative flex-grow z-10 ">{children}</main>
+          </div>
+          <Toaster />
           <footer className="relative z-10">
           <Footer />
           </footer>
