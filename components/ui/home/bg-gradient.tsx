@@ -20,8 +20,8 @@ const GradientBackground = styled.div`
     left: 0;
     width: 100%;
     height: 100vh;
-    background: linear-gradient(45deg, #ffffff, #39ff14);
-    animation: ${pulse} 3s infinite;
+    background: linear-gradient(135deg, #18181b 0%, #23232a 100%);
+    opacity: 0.9;
     z-index: -1;
 `;
 

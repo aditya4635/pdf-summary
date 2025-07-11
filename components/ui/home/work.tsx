@@ -33,10 +33,10 @@ const steps:Steps[] = [
 
 const Work = () => {
   return (
-    <section className='relative overflow-hidden bg-gray-50'>
+    <section className='relative overflow-hidden bg-background'>
     <div className='mb-0 mx-10 flex flex-col items-center justify-center text-center pt-40'>
-      <h2 className='text-center text-3xl font-bold text-rose-500 '>How it works</h2>
-      <h1 className='text-base m-7'>Transform any PDF inti an easy to digest summary in three simple steps</h1>
+      <h2 className='text-center text-3xl font-bold text-primary '>How it works</h2>
+      <h1 className='text-base m-7 text-foreground'>Transform any PDF inti an easy to digest summary in three simple steps</h1>
       <div className='flex flex-col items-center justify-center space-y-4 mx-auto '>
        {steps.map((step, index) => (
          <StepItem key={index} {...step} />
@@ -49,14 +49,14 @@ const Work = () => {
 }
 function StepItem({icon,label,description}:Steps) {
     return (
-        <div className='relative p-6 rounded-2xl bg-white/5 backdrop-blur-xs border border-white/10 hover:border-rose-500/50  transition-colors group w-full flex flex-col items-center justify-center space-y-4 mx-auto '>
-            <div className='flex items-center justify-center h-24 w-24 mx-auto rounded-2xl bg-linear-to-br from-rose-500 to-transparent group-hover:from-rose-500/20 transition-colors'>
+        <div className='relative p-6 rounded-2xl bg-card/80 backdrop-blur-xs border border-border hover:border-primary/50  transition-colors group w-full flex flex-col items-center justify-center space-y-4 mx-auto shadow-lg'>
+            <div className='flex items-center justify-center h-24 w-24 mx-auto rounded-2xl bg-gradient-to-br from-primary to-background group-hover:from-primary/20 transition-colors'>
             <div >
                 {icon}
             </div>
             </div>
-            <h4>{label}</h4>
-            <p>{description}</p>
+            <h4 className='text-lg font-bold text-primary'>{label}</h4>
+            <p className='text-muted-foreground'>{description}</p>
         </div>
     )
 }
