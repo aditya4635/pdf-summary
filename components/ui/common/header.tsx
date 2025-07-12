@@ -12,7 +12,7 @@ const Header = () => {
       <div className='flex items-center'>
         <NavLink href="/" className='p-1 my-auto flex px-1 lg:px-2 !text-foreground font-bold text-xl' style={{ fontFamily: 'Inter, Segoe UI, sans-serif' }}>
           <FileText size={24} className='!text-foreground hover:rotate-12 transform transition duration-200 ease-in-out'/>
-          <span className='!text-foreground font-bold ml-2'>Adiya</span>
+          <span className='!text-foreground font-bold ml-2'>Summy</span>
         </NavLink>
       </div>
       <div className='flex flex-col items-center justify-center'>

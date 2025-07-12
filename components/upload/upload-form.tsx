@@ -5,7 +5,7 @@ import UploadFormInput from './upload-form-input'
 import {z} from 'zod'
 import { useUploadThing } from '@/utils/upload.thing';
 import { toast } from 'sonner';
-import generatePdfSummary from '@/actions/upload-actions';
+import {generatePdfSummary} from '@/actions/upload-actions';
 
 
 const schema = z.object({
@@ -20,13 +20,18 @@ export default function UploadForm() {
     
     const { startUpload, routeConfig } = useUploadThing("pdfUploader", {
         onClientUploadComplete: () => {
-          alert("uploaded successfully!");
+          toast.dismiss("upload-toast");
+          toast.success("File uploaded successfully!");
         },
         onUploadError: (err) => {
-          toast("Error occurred while uploading file. Please try again with another file.");
+          toast.dismiss("upload-toast");
+          toast.error("Error occurred while uploading file. Please try again with another file.");
         },
         onUploadBegin: (file: string) => {
           console.log("upload has begun for", file);
+          toast.loading("Uploading file. Please wait our AI is reading through your pdf...", {
+            id: "upload-toast"
+          });
         },
       });
     
@@ -45,16 +50,19 @@ export default function UploadForm() {
     return;
     }
     //upload the pdf to upload pdf
-    const resp =await startUpload([file])
-    if (!resp) {
-      toast('Error uploading file. Please try again with another file.')
+    const resp = await startUpload([file])
+    if (!resp || resp.length === 0) {
+      toast.error('Error uploading file. Please try again with another file.')
       return;
     }
-    toast('Uploading file. Please wait our AI is reading through your pdf.')
+    
 
     //parse the pdf using langchain 
 
-    // const summary = await generatePdfSummary(resp);
+    const summary = await generatePdfSummary(resp);
+    console.log({summary});
+
+    
     //summarise the pdf
     // save the summary to the database
     //redirect to the [id] summary page

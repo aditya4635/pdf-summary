@@ -1,32 +1,40 @@
 "use server";
 
-export default function generatePdfSummary(uploadResponse:{
-    serverData:{
-               userId: string;
-               file:{
-                url:'string';
-                name:'string';
-                    }
-                }
-            })
+import { fetchAndExtractPdfText } from "@/lib/langchain";
+
+export async function generatePdfSummary(uploadResponse: Array<{
+    serverData: {
+        serverData: {
+            userId: string;
+            file: {
+                url: string;
+                name: string;
+            };
+        };
+    };
+}>)
     {
         if (!uploadResponse) {
             return{
             success: false,
             error: 'Error uploading file. Please try again with another file.',
             data: null
-            }
+            };
                              }
 
-        const {serverData: {
-            userId,
-            file: {
-                url : pdfUrl,
-                name: pdfName
+        const {
+            serverData: {
+                serverData: {
+                    userId,
+                    file: {
+                        url: pdfUrl,
+                        name: fileName
                     },
-            },}= uploadResponse[0];
+                },
+            },
+        } = uploadResponse[0];
 
-    if (!pdfUrl || !pdfName) {
+    if (!pdfUrl ) {
         return{
             success: false,
             error: 'Error uploading file. Please try again with another file.',
@@ -35,7 +43,8 @@ export default function generatePdfSummary(uploadResponse:{
         }
 
     try{
-      const pdfText = await fetchAndExtractPdfText(pdfUrl);
+      const pdfText =  await fetchAndExtractPdfText(pdfUrl);
+       console.log({pdfText});
     }catch(err){
         return{
             success: false,
@@ -43,3 +52,5 @@ export default function generatePdfSummary(uploadResponse:{
             data: null
         };
     }
+}
+

@@ -18,7 +18,7 @@ const Hero = () => {
         <h2 className="font-bold pt-0 mt-0 text-center text-muted-foreground mb-12">Get a beautiful summary reel of the PDF in seconds</h2>
         <Button variant={'link'} className="bg-gradient-to-r from-primary to-secondary font-bold hover:from-secondary hover:to-primary text-primary-foreground border-2 border-primary pr-5 rounded-full p-5 hover:no-underline ">
           <Link href='/#pricing' className="flex items-center justify-center ">
-          <span className="font-bold text-base  ">Try Adiya</span>
+          <span className="font-bold text-base  ">Try Summy</span>
           <ArrowRight className="h-6 w-6 ml-2"/>
           </Link>
           </Button>
