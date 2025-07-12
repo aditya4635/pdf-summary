@@ -13,7 +13,7 @@ export default function UploadHeader(){
         </div>
         <div className='capitalize text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl'>
         <h1 className='text-rose-500 pb-20 pt-12'>Start uploading your PDF </h1>
-        <p className='text-base '>Upload your PDF and we'll summarize it for you</p>
+        <p className='text-white '>Upload your PDF and we'll summarize it for you</p>
         </div>
       </div>)
 }

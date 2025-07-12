@@ -1,5 +1,6 @@
 "use server";
 
+import { generateSummaryFromGemini } from "@/lib/geminiai";
 import { fetchAndExtractPdfText } from "@/lib/langchain";
 
 export async function generatePdfSummary(uploadResponse: Array<{
@@ -45,6 +46,17 @@ export async function generatePdfSummary(uploadResponse: Array<{
     try{
       const pdfText =  await fetchAndExtractPdfText(pdfUrl);
        console.log({pdfText});
+
+       let summary;
+       try{
+        summary=await generateSummaryFromGemini(pdfText);
+        console.log({summary});
+       }
+       
+       catch(geminierror){
+        console.error('gemini API failed',geminierror);
+        throw new Error('Gemini API failed to generate summary')
+       }
     }catch(err){
         return{
             success: false,

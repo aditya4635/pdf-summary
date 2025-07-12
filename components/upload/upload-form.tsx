@@ -1,11 +1,12 @@
 "use client";
 
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import UploadFormInput from './upload-form-input'
 import {z} from 'zod'
 import { useUploadThing } from '@/utils/upload.thing';
 import { toast } from 'sonner';
 import {generatePdfSummary} from '@/actions/upload-actions';
+import { setMaxIdleHTTPParsers } from 'http';
 
 
 const schema = z.object({
@@ -17,7 +18,8 @@ const schema = z.object({
 
 
 export default function UploadForm() {
-    
+    const [isLoading,setIsLoading]=useState(false);
+    const formRef =useRef<HTMLFormElement>(null);
     const { startUpload, routeConfig } = useUploadThing("pdfUploader", {
         onClientUploadComplete: () => {
           toast.dismiss("upload-toast");
@@ -37,31 +39,49 @@ export default function UploadForm() {
     
     const handleSubmit =async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('submitted');
-    const formData = new FormData(e.currentTarget);
-    const file = formData.get('file') as File ;
-
-
-    //validation of the fields
-    const validatedFields = schema.safeParse({ file });
-
-    if (!validatedFields.success) {
-    toast(validatedFields.error.errors[0].message);
-    return;
-    }
-    //upload the pdf to upload pdf
-    const resp = await startUpload([file])
-    if (!resp || resp.length === 0) {
-      toast.error('Error uploading file. Please try again with another file.')
+    try{
+      setIsLoading(true);
+      
+      const formData = new FormData(e.currentTarget);
+      const file = formData.get('file') as File ;
+  
+  
+      //validation of the fields
+      const validatedFields = schema.safeParse({ file });
+  
+      if (!validatedFields.success) {
+      toast(validatedFields.error.errors[0].message);
+      setIsLoading(false);
       return;
+      }
+      //upload the pdf to upload pdf
+      const resp = await startUpload([file])
+      if (!resp || resp.length === 0) {
+        toast.error('Error uploading file. Please try again with another file.')
+        setIsLoading(false);
+        return;
+      }
+      
+  
+      //parse the pdf using langchain 
+  
+      const result = await generatePdfSummary(resp);
+      
+      const {data=null, message=null} = result || {};
+  
+      if (data){
+        toast.loading(
+          "Hang tight! we are saving..",
+        );
+  
+        formRef.current?.reset();
+      }
     }
-    
-
-    //parse the pdf using langchain 
-
-    const summary = await generatePdfSummary(resp);
-    console.log({summary});
-
+    catch(error){
+      setIsLoading(false);
+      console.error('error occured',error);
+      formRef.current?.reset();
+    }
     
     //summarise the pdf
     // save the summary to the database
@@ -70,7 +90,7 @@ export default function UploadForm() {
     return (
 
     <div className='flex flex-col items-center justify-center w-full max-w-2xl mx-auto'>
-    <UploadFormInput onSubmit={handleSubmit} />
+    <UploadFormInput isLoading={isLoading} ref={formRef} onSubmit={handleSubmit} />
     </div>
   );
 }
