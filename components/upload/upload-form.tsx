@@ -5,7 +5,7 @@ import UploadFormInput from './upload-form-input'
 import {z} from 'zod'
 import { useUploadThing } from '@/utils/upload.thing';
 import { toast } from 'sonner';
-import {generatePdfSummary} from '@/actions/upload-actions';
+import {generatePdfSummary, storePdfSummary} from '@/actions/upload-actions';
 import { setMaxIdleHTTPParsers } from 'http';
 
 
@@ -62,19 +62,31 @@ export default function UploadForm() {
         return;
       }
       
-  
+      console.log('Upload response:', resp);
       //parse the pdf using langchain 
   
-      const result = await generatePdfSummary(resp);
+      const result = await generatePdfSummary(resp.map(r=>r.serverData));
       
       const {data=null, message=null} = result || {};
   
       if (data){
+        let storeResult:any;
         toast.loading(
           "Hang tight! we are saving..",
         );
   
-        formRef.current?.reset();
+        
+        if(data.summary){
+          storeResult=await storePdfSummary({
+            fileUrl:resp[0].serverData.serverData.file.url,
+            summary:data.summary,
+            title:data.title,
+            fileName:file.name
+          });
+
+          toast.success('Summary Saved');
+          formRef.current?.reset();
+        }
       }
     }
     catch(error){

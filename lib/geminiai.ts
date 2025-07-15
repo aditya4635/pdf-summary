@@ -7,9 +7,9 @@ const genAI =new GoogleGenerativeAI( process.env.GEMINI_API_KEY || '');
 export const generateSummaryFromGemini = async (pdfText: string)=> { 
 try{
 const model =genAI.getGenerativeModel({ model:
-"gemini-1.5-pro-002", generationConfig: {
+"gemini-2.5-flash", generationConfig: {
     temperature:0.7,
-    maxOutputTokens: 1500,
+    maxOutputTokens: 2000,
 },});
 
 const prompt = {contents: [{role:'user', parts:[{text:SUMMARY_SYSTEM_PROMPT },
