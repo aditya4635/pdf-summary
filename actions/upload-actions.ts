@@ -5,6 +5,7 @@ import { generateSummaryFromGemini } from "@/lib/geminiai";
 import { fetchAndExtractPdfText } from "@/lib/langchain";
 import { formatFileNameAsTitle } from "@/utils/format-utils";
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 interface pdfSummaries{
     userId?:string,fileUrl:string,summary:string,title:string,fileName:string
 };
@@ -118,7 +119,7 @@ export async function storePdfSummary({userId,fileUrl,summary,title,fileName}:pd
     //user logged in
     //savepdfsummary
 
-    let savepdfSummary:any;
+    let savedSummary:any;
     try{
         const {userId} =await auth();
         if(!userId){
@@ -127,21 +128,30 @@ export async function storePdfSummary({userId,fileUrl,summary,title,fileName}:pd
                 message:'User not found',
             };
         }
-        savepdfSummary=await savePdfSummary({userId,fileUrl,summary,title,fileName});
-        if(!savepdfSummary){
+        savedSummary=await savePdfSummary({userId,fileUrl,summary,title,fileName});
+        if(!savedSummary){
             return {
                 success:false,
                 message:'Please try again, failed to save summary',
             };
         }
-        return{
-            success:true,
-            message:'successfully saved summary',
-        }
+
+
+        
     } catch(error){
         return {
             success: false,
             message: error instanceof Error? error.message:'Error saving the PDF',
+        }
+    }
+
+    //revalidate the cache
+    revalidatePath(`/summaries/${savedSummary.id}`);
+    return{
+        success:true,
+        message:'successfully saved summary',
+        data:{
+            id:savedSummary.id,
         }
     }
 }

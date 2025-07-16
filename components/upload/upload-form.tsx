@@ -7,6 +7,8 @@ import { useUploadThing } from '@/utils/upload.thing';
 import { toast } from 'sonner';
 import {generatePdfSummary, storePdfSummary} from '@/actions/upload-actions';
 import { setMaxIdleHTTPParsers } from 'http';
+import Router from 'next/router';
+import { useRouter } from 'next/navigation';
 
 
 const schema = z.object({
@@ -44,6 +46,7 @@ export default function UploadForm() {
       
       const formData = new FormData(e.currentTarget);
       const file = formData.get('file') as File ;
+      const router=useRouter();
   
   
       //validation of the fields
@@ -86,6 +89,7 @@ export default function UploadForm() {
 
           toast.success('Summary Saved');
           formRef.current?.reset();
+          router.push(`/summaries/${storeResult.id}`);
         }
       }
     }
@@ -93,6 +97,8 @@ export default function UploadForm() {
       setIsLoading(false);
       console.error('error occured',error);
       formRef.current?.reset();
+    }finally{
+      setIsLoading(false);
     }
     
     //summarise the pdf
